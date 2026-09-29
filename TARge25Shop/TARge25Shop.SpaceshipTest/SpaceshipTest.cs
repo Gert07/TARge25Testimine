@@ -87,6 +87,102 @@ namespace TARge25Shop.SpaceshipTest
             // kontroll
             Assert.Equal(addSpaceship.Id, deleteSpaceship.Id);
         }
+        //test, mis kontrollib, et spaceshipi uuendatakse, uute andmete korral
+        [Fact]
+        public async Task Should_UpdateSpaceshipById_WhenUpdatingData()
+        {
+            //ülesseae
+            var guid = new Guid("e70e583b-b215-4498-8e5b-b17b80153e46");
+
+            SpaceshipDto dto = MockSpaceshipData();
+
+            SpaceshipDto domain = new();
+
+            domain.Id = guid;
+            domain.EnginePower = 100000000;
+            domain.ShipType = "Igor Mang 2";
+            domain.ShipType = "püramiid";
+            domain.Crew = 420;
+            domain.CreatedAt = dto.CreatedAt; // ei tohi muutuda Update korral, tuleb võtta olemasolevasat objektist
+            domain.UpdatedAt = DateTime.UtcNow;
+
+            //tegevus
+            await Svc<ISpaceshipServices>().Update(dto);
+
+            //kontroll
+            Assert.Equal(domain.Id, guid);
+            Assert.NotEqual(dto.EnginePower, domain.EnginePower);
+            Assert.NotEqual(dto.Name, domain.Name);
+            Assert.DoesNotMatch(dto.Crew.ToString(), domain.Crew.ToString());
+            Assert.DoesNotMatch(dto.ShipType, domain.ShipType);
+            Assert.Equal(dto.CreatedAt, domain.CreatedAt);
+            Assert.NotEqual(dto.UpdatedAt, domain.CreatedAt);
+        }
+
+        [Fact]
+        public async Task ShouldNot_UpdateSpaceshipById_WhenNoDataIsUpdated()
+        {
+            //ülesseade
+            SpaceshipDto dto = MockSpaceshipData();
+            var createdSpaceship = await Svc<ISpaceshipServices>().Create(dto);
+
+            //tegevus 
+            SpaceshipDto nullDto = MockSpaceshipNullData();
+            var result = await Svc<ISpaceshipServices>().Update(nullDto);
+
+            //kontroll
+            Assert.NotEqual(createdSpaceship.Id, result.Id);
+        }
+        /// <summary>
+        /// Returns a nulled object for testing purposes
+        /// </summary>
+        /// <returns></returns>
+        private SpaceshipDto MockSpaceshipNullData()
+        {
+            return new SpaceshipDto
+            {
+                Id = null,
+                Name = "",
+                ShipType = "",
+                Crew = 0,
+                EnginePower = 0,
+                CreatedAt = DateTime.MinValue,
+                UpdatedAt = DateTime.MinValue
+            };
+        }
+
+        //Kuna mootor ei saa olla negatiivse võimsusega 
+        [Fact]
+        public async Task ShouldNot_CreateSpaceshipWithNegativeEnginePower()
+        {
+            //Ülesseade
+            SpaceshipDto dto = MockSpaceshipData(true);
+            dto.EnginePower -= (dto.EnginePower * 2);
+
+            //Tegevus
+            var result = await Svc<ISpaceshipServices>().Create(dto);
+
+            //Kontroll
+            Assert.True(result.EnginePower > 0);
+        }
+
+        //Test mis kontrollib, et meeskond on suurem kui 3 liiget
+        //service ei tohi lisada sellest vähema arvuga objekti, service
+        //võib selle probleemi lahendada ükskõik kuidas
+        [Fact]
+        public async Task ShouldNot_CreateSpaceshipWithLessThan3CrewMembers()
+        {
+            //Ülesseade
+            SpaceshipDto dto = MockSpaceshipData(true);
+            dto.Crew = 2;
+
+            //Tegevus
+            var result = await Svc<ISpaceshipServices>().Create(dto);
+
+            //Kontroll
+            Assert.True(result.Crew >= 3);
+        }
+
 
         private SpaceshipDto MockSpaceshipData(bool isOneOrTwo = false)
         {

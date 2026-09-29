@@ -42,7 +42,16 @@ namespace TARge25Shop.ApplicationServices.Services
             //saab kutsuda teise service classi meetotit
             //esile service classis
             _fileServices.FilesToApi(dto, spaceShip);
+            if (spaceShip.EnginePower < 0)
+            {
+                spaceShip.EnginePower = 1;
+            }
 
+
+            if (spaceShip.Crew < 3)
+            {
+                spaceShip.Crew = 3;
+            }
             //andmete salvestamine andmebaasi
             _context.Spaceships.Add(spaceShip);
             await _context.SaveChangesAsync();
@@ -62,7 +71,7 @@ namespace TARge25Shop.ApplicationServices.Services
             spaceShip.ShipType = dto.ShipType;
             spaceShip.Crew = dto.Crew;
             spaceShip.EnginePower = dto.EnginePower;
-            spaceShip.CreatedAt = dto.CreatedAt;
+            spaceShip.CreatedAt = dto.CreatedAt ?? DateTime.Now;
             spaceShip.UpdatedAt = DateTime.Now;
 
             //andmete uuendamine andmebaasis
