@@ -7,35 +7,35 @@
     <hr />
     <dl class="row">
         <div class="form-group row">
-            <label asp-for="Id" class="col-sm-2 col-form-label"></label>
+            <label asp-for="Id" id="Details_SpaceshipId" class="col-sm-2 col-form-label"></label>
             @Html.DisplayFor(model => model.Id)
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
-            <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+            <label asp-for="Name" id="Details_SpaceshipName" class="col-sm-2 col-form-label"></label>
             @Html.DisplayFor(model => model.Name)
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
-            <label asp-for="ShipType" class="col-sm-2 col-form-label"></label>
+            <label asp-for="ShipType" id="Details_SpaceshipType" class="col-sm-2 col-form-label"></label>
             @Html.DisplayFor(model => model.ShipType)
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
-            <label asp-for="Crew" class="col-sm-2 col-form-label"></label>
+            <label asp-for="Crew" id="Details_SpaceshipCrew" class="col-sm-2 col-form-label"></label>
             @Html.DisplayFor(model => model.Crew)
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
-            <label asp-for="EnginePower" class="col-sm-2 col-form-label"></label>
+            <label asp-for="EnginePower" id="Details_SpaceshipEnginePower" class="col-sm-2 col-form-label"></label>
             @Html.DisplayFor(model => model.EnginePower)
         </div>
     </dl>
@@ -59,5 +59,5 @@
         <partial name="_Images" model="images" />
     }
 
-    <a asp-action="Index" asp-controller="spaceship" class="btn btn-success">Back</a>
+    <a asp-action="Index" asp-controller="spaceship" id="Details_BackButton" class="btn btn-success">Back</a>
 </div>
